@@ -1,5 +1,5 @@
-# flappy-master
-UCI AI Club Flappy Bird Master 
+# Flappy Bird Workshop
+UCI AI Club Flappy Bird  
 
 ## Prerequisites
 
