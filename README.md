@@ -4,7 +4,9 @@ UCI AI Club Flappy Bird
 ## Download
 
 Use the "Clone or download" and click "Download ZIP".
+
 Save the folder to your computer.
+
 Open a Terminal (OSX/LINUX) or CMD (WINDOWS) and follow the below instructions.
 
 ## Prerequisites
