@@ -11,7 +11,9 @@ Open a Terminal (OSX/LINUX) or CMD (WINDOWS) and follow the below instructions.
 
 ## Prerequisites
 
-We have provided a requirements.txt for you to setup your **python3.6 environment.**
+We have provided a requirements.txt for you to setup your **python3.6.6 environment.**
+
+**Has to be python3.6.6, other tensorflow will not install**
 
 Change directories to flappy bird folder
 ```
@@ -48,5 +50,12 @@ flappyenv\Scripts\activate.bat
 pip install -r requirements.txt
 
 ```
+##RUN
+Once you have got your venv activated, run the following command
+
+'''
+python flappy.py
+
+'''
 
 
