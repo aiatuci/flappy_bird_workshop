@@ -50,12 +50,12 @@ flappyenv\Scripts\activate.bat
 pip install -r requirements.txt
 
 ```
-##RUN
+### RUN
+
 Once you have got your venv activated, run the following command
 
-'''
+```
 python flappy.py
-
-'''
+```
 
 
