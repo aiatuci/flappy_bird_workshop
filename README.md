@@ -13,6 +13,9 @@ Open a Terminal (OSX/LINUX) or CMD (WINDOWS) and follow the below instructions.
 
 We have provided a requirements.txt for you to setup your **python3.6.6 environment.**
 
+Python 3.6 Download.
+https://www.python.org/downloads/release/python-368/?fbclid=IwAR2tjkyGDbWLivj2TVRRBYpB5hSFk7LmKcCpCKJU9ASrmq2CNcdxwsSZKxg
+
 **Has to be python3.6.6, other tensorflow will not install**
 
 Change directories to flappy bird folder
