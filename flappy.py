@@ -84,11 +84,6 @@ def showGameOverScreen(crashInfo):
 
         # [TODO]
         # Perform Crossover & Mutation
-        cross_over_weights = model_crossover(idx1, idx2)
-        mutated1 = model_mutate(cross_over_weights[0])
-        mutated2 = model_mutate(cross_over_weights[1])
-        new_weights.append(mutated1)
-        new_weights.append(mutated2)
 
     # Reset fitness scores for new round
     # Set new generation weights
@@ -108,17 +103,6 @@ def model_crossover(parent1, parent2):
     # obtain parent weights
     # get random gene
     # swap genes
-    global current_pool
-    weight1  = current_pool[parent1].get_weights()
-    weight2 = current_pool[parent2].get_weights()
-
-    new_weight1 = weight1
-    new_weight2 = weight2
-
-    gene = 0
-
-    new_weight1[gene] = weight2[gene]
-    new_weight2[gene] = weight1[gene]
 
     return np.asarray([new_weight1, new_weight2])
 
@@ -145,13 +129,6 @@ def predict_action(height, dist, pipe_height, model_num):
     # Feed in features to the neural net
     # Reshape input
     # Get prediction from model
-    neural_input = np.asarray([height, dist, pipe_height])
-    neural_input = np.atleast_2d(neural_input)
-
-    output_prob = current_pool[model_num].predict(neural_input, 1)[0]
-    if output_prob[0] <= 0.5:
-        return 1
-    return 2
 
 
 
@@ -161,17 +138,6 @@ for i in range(total_models):
     # create keras model
     # add model to current pool
     # reset fitness score
-    model = Sequential()
-    model.add(Dense(3, input_shape=(3,)))
-    model.add(Activation('relu'))
-    model.add(Dense(7, input_shape=(3,)))
-    model.add(Activation('relu'))
-    model.add(Dense(1, input_shape=(7,)))
-    model.add(Activation('sigmoid'))
-
-    model.compile(loss='mse', optimizer='adam', metrics=['accuracy'])
-    current_pool.append(model)
-    fitness.append(-100)
 
 
 if load_saved_pool:
