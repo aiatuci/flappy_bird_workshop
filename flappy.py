@@ -110,11 +110,7 @@ def model_crossover(parent1, parent2):
 # [TODO]
 def model_mutate(weights):
     # mutate each models weights
-    for i in range(len(weights)):
-        for j in range(len(weights[i])):
-            if random.uniform(0,1) > 0.85:
-                change = random.uniform(-0.5, 0.5)
-                weights[i][j] += change
+
     return weights
 
 
