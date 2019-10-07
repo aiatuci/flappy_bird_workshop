@@ -33,86 +33,22 @@ next_pipe_x = -1
 next_pipe_hole_y = -1
 generation = 1
 
+# START ADD
+highest_fitness = -1
+best_weights = []
+# END ADD
+
 
 def save_pool():
     for xi in range(total_models):
         current_pool[xi].save_weights("SavedModels/model_new" + str(xi) + ".keras")
     print("Saved current pool!")
 
+def create_model():
+    # [TODO]
+    # create keras model
 
-
-def showGameOverScreen(crashInfo):
-    # Perform genetic updates here
-
-    global current_pool
-    global fitness
-    global generation
-    new_weights = []
-    total_fitness = 0
-
-    # Adding up fitness of all birds
-    for select in range(total_models):
-        total_fitness += fitness[select]
-
-    # Scaling bird's fitness by total fitness
-    for select in range(total_models):
-        fitness[select] /= total_fitness
-        # Add previous fitness to selected bird and store
-        if select > 0:
-            fitness[select] += fitness[select-1]
-
-    for select in range(total_models // 2):
-        # Set parents with random number
-        parent1 = random.uniform(0, 1)
-        parent2 = random.uniform(0, 1)
-
-        idx1 = -1
-        idx2 = -1
-
-        # Only get new parents if there is a higher score than round
-        # Set parent 1 to highest score
-        for i in range(total_models):
-            if fitness[i] >= parent1:
-                idx1 = i
-                break
-
-        # Set parent 2 to
-        for j in range(total_models):
-            if fitness[j] >= parent2:
-                idx2 = j
-                break
-
-        # [TODO]
-        # Perform Crossover & Mutation
-
-    # Reset fitness scores for new round
-    # Set new generation weights
-    for select in range(len(new_weights)):
-        fitness[select] = -100
-        current_pool[select].set_weights(new_weights[select])
-
-    if save_current_pool == 1:
-        save_pool()
-
-    generation += 1
-    return
-
-
-# [TODO]
-def model_crossover(parent1, parent2):
-    # obtain parent weights
-    # get random gene
-    # swap genes
-
-    return np.asarray([new_weight1, new_weight2])
-
-
-# [TODO]
-def model_mutate(weights):
-    # mutate each models weights
-
-    return weights
-
+    return model
 
 def predict_action(height, dist, pipe_height, model_num):
     global current_pool
@@ -128,20 +64,102 @@ def predict_action(height, dist, pipe_height, model_num):
 
 
 
+
+
+# [TODO]
+def model_crossover(parent1, parent2):
+    # obtain parent weights
+    # get random gene
+    # swap genes
+
+
+
+# [TODO]
+def model_mutate(weights,generation):
+    # mutate each models weights
+
+
+def showGameOverScreen(crashInfo):
+    # Perform genetic updates here
+
+    global current_pool
+    global fitness
+    global generation
+    new_weights = []
+    total_fitness = 0
+
+    # START ADD
+    global highest_fitness
+    global best_weights
+    updated = False
+    # END ADD
+
+    # Adding up fitness of all birds
+    for select in range(total_models):
+        total_fitness += fitness[select]
+        # START ADD
+        if fitness[select] >= highest_fitness:
+            updated = True
+            highest_fitness = fitness[select]
+            best_weights = current_pool[select].get_weights()
+        # END ADD
+
+    # REMOVE HERE
+    '''
+    # Scaling bird's fitness by total fitness
+    for select in range(total_models):
+        fitness[select] /= total_fitness
+        # Add previous fitness to selected bird and store
+        if select > 0:
+            fitness[select] += fitness[select-1]
+    '''
+
+    # ADD HERE
+    # Get top two parents
+    parent1 = random.randint(0,total_models-1)
+    parent2 = random.randint(0,total_models-1)
+
+    for i in range(total_models):
+        if fitness[i] >= fitness[parent1]:
+            parent1 = i
+
+    for j in range(total_models):
+        if j != parent1:
+            if fitness[j] >= fitness[parent2]:
+                parent2 = j
+
+
+    for select in range(total_models // 2):
+
+        # [TODO]
+
+    # Reset fitness scores for new round
+    # Set new generation weights
+    for select in range(len(new_weights)):
+        fitness[select] = -100
+        current_pool[select].set_weights(new_weights[select])
+    if save_current_pool == 1:
+        save_pool()
+
+    generation += 1
+    return
+
+
+
 # Initialize all models
 for i in range(total_models):
-    # [TODO]
-    # create keras model
-    # add model to current pool
+    model = create_model()
+    current_pool.append(model)
     # reset fitness score
+    fitness.append(-100)
 
 
 if load_saved_pool:
     for i in range(total_models):
         current_pool[i].load_weights("SavedModels/model_new"+str(i)+".keras")
 
-for i in range(total_models):
-    print(current_pool[i].get_weights())
+# for i in range(total_models):
+#     print(current_pool[i].get_weights())
 
 # list of all possible players (tuple of 3 positions of flap)
 PLAYERS_LIST = (
@@ -382,6 +400,7 @@ def mainGame(movementInfo):
             }
 
         # check for score
+        gone_through_a_pipe = False
         for idx in range(total_models):
             if playersState[idx] == True:
                 pipe_idx = 0
@@ -391,10 +410,14 @@ def mainGame(movementInfo):
                     if pipeMidPos <= playerMidPos < pipeMidPos + 4:
                         next_pipe_x = lowerPipes[pipe_idx+1]['x']
                         next_pipe_hole_y = (lowerPipes[pipe_idx+1]['y'] + (upperPipes[pipe_idx+1]['y'] + IMAGES['pipe'][pipe_idx+1].get_height())) / 2
-                        score += 1
+                        gone_through_a_pipe  = True
+                        # score += 1
                         fitness[idx] += 25
                         # SOUNDS['point'].play()
                     pipe_idx += 1
+
+        if(gone_through_a_pipe):
+            score += 1
 
         # playerIndex basex change
         if (loopIter + 1) % 3 == 0:
