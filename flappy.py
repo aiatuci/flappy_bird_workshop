@@ -47,6 +47,15 @@ def save_pool():
 def create_model():
     # [TODO]
     # create keras model
+    model = Sequential()
+    model.add(Dense(3, input_shape=(3,)))
+    model.add(Activation('relu'))
+    model.add(Dense(7, input_shape=(3,)))
+    model.add(Activation('relu'))
+    model.add(Dense(1, input_shape=(3,)))
+    model.add(Activation('sigmoid'))
+
+    model.compile(loss='mse',optimizer='adam')
 
     return model
 
@@ -61,6 +70,14 @@ def predict_action(height, dist, pipe_height, model_num):
     # Feed in features to the neural net
     # Reshape input
     # Get prediction from model
+    neural_input = np.asarray([height,dist,pipe_height])
+    neural_input = np.atleast_2d(neural_input)
+
+    output_prob = current_pool[model_num].predict(neural_input, 1)[0]
+
+    if(output_prob[0] <= .5):
+        return 1
+    return 2
 
 
 
@@ -71,12 +88,33 @@ def model_crossover(parent1, parent2):
     # obtain parent weights
     # get random gene
     # swap genes
+    global current_pool
+
+    weight1 = current_pool[parent1].get_weights()
+    weight2 = current_pool[parent2].get_weights()
+
+    new_weight1 = weight1
+    new_weight2 = weight2
+
+    gene = random.randint(0,len(new_weight1)-1)
+
+    new_weight1[gene] = weight2[gene]
+    new_weight2[gene] = weight1[gene]
+
+    return np.asarray([new_weight1,new_weight2])
 
 
 
 # [TODO]
-def model_mutate(weights,generation):
+def model_mutate(weights):#,generation):
     # mutate each models weights
+    for i in range(len(weights)):
+        for j in range(len(weights[i])):
+            if( random.uniform(0,1) > .85):
+                change = random.uniform(-.5,.5)
+                weights[i][j] += change
+    return weights
+
 
 
 def showGameOverScreen(crashInfo):
@@ -130,8 +168,15 @@ def showGameOverScreen(crashInfo):
 
 
     for select in range(total_models // 2):
-
         # [TODO]
+        cross_over_weights = model_crossover(parent1,parent2)
+        if updated == False:
+            cross_over_weights[1] = best_weights
+        mutated1 = model_mutate(cross_over_weights[0])
+        mutated2 = model_mutate(cross_over_weights[0])
+
+        new_weights.append(mutated1)
+        new_weights.append(mutated2)
 
     # Reset fitness scores for new round
     # Set new generation weights
