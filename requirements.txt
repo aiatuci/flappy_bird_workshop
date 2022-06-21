@@ -7,7 +7,7 @@ Keras==2.2.4
 Keras-Applications==1.0.6
 Keras-Preprocessing==1.0.5
 Markdown==3.0.1
-numpy==1.15.2
+numpy==1.22.0
 protobuf==3.6.1
 pygame==1.9.6
 PyYAML==3.13
